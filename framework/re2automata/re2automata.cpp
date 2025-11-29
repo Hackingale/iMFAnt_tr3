@@ -580,6 +580,8 @@ int findCommonRange_multi(mergedCOO* m, singleCOO* a, mergingSet *ms, int prevFo
             // compare all ranges in the FSA and MFSA
             if(a->ranges[j].neg==m->ranges[i].neg
             && a->ranges[j].len==m->ranges[i].len){
+                cout<<"comparing ranges: "<<i<<" and "<<j<<endl;
+
                 int cnt = 0;
                 int flag = 0;
                 vector<uint16_t> s1; 
@@ -601,6 +603,7 @@ int findCommonRange_multi(mergedCOO* m, singleCOO* a, mergingSet *ms, int prevFo
                     if(a->ranges[j].ref[k] == (mask_rg | MINUS)){
                         for(int l=a->ranges[j].ref[k-1]+1; l<a->ranges[j].ref[k+1]; l++){
                             visited1.set(l);
+                            cout<<"range "<<j<<" set char "<<l<<endl;
                         }
                     } else {
                         visited1.set(a->ranges[j].ref[k]);
@@ -614,28 +617,30 @@ int findCommonRange_multi(mergedCOO* m, singleCOO* a, mergingSet *ms, int prevFo
                     if(m->ranges[i].ref[k] == (mask_rg | MINUS)){
                         for(int l=m->ranges[i].ref[k-1]+1; l<m->ranges[i].ref[k+1]; l++){
                             visited2.set(l);
+                            cout<<"range "<<i<<" set char "<<l<<endl;
                         }
                     } else {
                         visited2.set(m->ranges[i].ref[k]);
                     }
                 }
-                    
-                for(int k=0; k<ALPHA_SIZE; k++){
-                    if(visited1[k] && visited2[k]){
-                        cnt++;
-                    }
-                }
 
-                if (cnt == m->ranges[i].len)
+                    
+                // for(int k=0; k<ALPHA_SIZE; k++){
+                //     if(visited1[k] && visited2[k]){
+                //         cnt++;
+                //     }
+                // }
+
+                if ((visited1 & visited2).count() == m->ranges[i].len)
                     flag = 1;
 
 
                 int cfrState = -1;
-                if (ms->size()>0){
-                    cfrState = ms->at(ms->size()-1).oldStates[ms->at(ms->size()-1).oldStates.size()-1];
-                }
+                // if (ms->size()>0){
+                //     cfrState = ms->at(ms->size()-1).oldStates[ms->at(ms->size()-1).oldStates.size()-1];
+                // }
                 
-                if(flag && !existsArc(a, cfrState, a->ranges[j].start)){
+                if(flag && !existsArc(a, ms, a->ranges[j].start)){
                     // if so, save starting and final states to merge the transition described by the character class
                     mergingTab mt;
                     mt.newStates.push_back(m->ranges[i].start);
@@ -781,8 +786,68 @@ void addTwin(mergedCOO *m, int id){
     }
     for(int i=0;i<m->rangeBelongsTo.size();i++){
         m->rangeBelongsTo[i].push_back(id);
-    }
+ }
     m->mergedSoFar++;
+}
+
+int compareTransitions(mergedCOO* m, singleCOO* a, int i, int j){
+    if (m->nonzeroValues[i] == a->nonzeroValues[j] && a->nonzeroValues[j]!= EPS){
+        return 1;
+    } else if (m->nonzeroValues[i] == a->nonzeroValues[j] && a->nonzeroValues[j]== EPS) {
+        int r1, r2;
+        for(int r = 0; r< m->ranges.size(); r++){
+            if (m->ranges[r].start == m->rowIdx[i] && m->ranges[r].end == m->colIdx[i]){
+                r1 = r;
+            }
+        }
+
+        for(int r = 0; r< a->ranges.size(); r++){
+            if (a->ranges[r].start == a->rowIdx[j] && a->ranges[r].end == a->colIdx[j]){
+                r2 = r;
+            }
+        }
+
+        if (m->ranges[r1].len != a->ranges[r2].len)
+            return 0;
+
+
+         
+
+        bitset<ALPHA_SIZE> visited1;
+        bitset<ALPHA_SIZE> visited2;
+
+        uint16_t mask_rg = 1 << 8;
+        uint16_t mask_sol = 1 << 9;
+
+        for(int k=0; k<a->ranges[r2].len; k++){
+            if(a->ranges[r2].ref[k] == (mask_rg | MINUS)){
+                for(int l=a->ranges[r2].ref[k-1]+1; l<a->ranges[r2].ref[k+1]; l++){
+                    visited1.set(l);
+                    cout<<"range "<<j<<" set char "<<l<<endl;
+                }
+            } else {
+                visited1.set(a->ranges[r2].ref[k]);
+            }
+
+            if(m->ranges[r1].ref[k] == (mask_rg | MINUS)){
+                for(int l=m->ranges[r1].ref[k-1]+1; l<m->ranges[r1].ref[k+1]; l++){
+                    visited2.set(l);
+                    cout<<"range "<<i<<" set char "<<l<<endl;
+                }
+            } else {
+                visited2.set(m->ranges[r1].ref[k]);
+            }
+
+        }           
+
+        if ((visited1 & visited2).count() == m->ranges[r1].len)
+            return 1;
+
+        return 0;
+
+
+    }
+    return 0;
 }
 
 /**
@@ -830,24 +895,17 @@ int findCommonSub_multi(mergedCOO* m, singleCOO* a, mergingSet *ms, int tmpFound
                 // find subsequence 
                 while(i+eqChar<a->nonzeroValues.size()
                 && j+eqChar<m->nonzeroValues.size()
-                && notInRange_multi(m, m->rowIdx[j+eqChar], m->colIdx[j+eqChar])
-                && notInRange(a, a->rowIdx[i+eqChar], a->colIdx[i+eqChar])
+                // && notInRange_multi(m, m->rowIdx[j+eqChar], m->colIdx[j+eqChar])
+                // && notInRange(a, a->rowIdx[i+eqChar], a->colIdx[i+eqChar])
                 && (computeMult(a, a->rowIdx[i+eqChar], a->colIdx[i+eqChar]).size()==1)
                 && (computeMult_m(m, m->rowIdx[j+eqChar], m->colIdx[j+eqChar]).size()==1)
-            
-                && (a->nonzeroValues[i+eqChar]==m->nonzeroValues[j+eqChar])
+                && compareTransitions(m, a, j+eqChar, i+eqChar)
+                // && (a->nonzeroValues[i+eqChar]==m->nonzeroValues[j+eqChar])
                 && checkStatesCompatibility_multi(m, a, i, j, eqChar)
                 // && path
                 ){
                     eqChar++;
-                    // if(a->nonzeroValues[i]!=EPS) notNull++;
-                    // if(eqChar>0){
-                    //     if((m->colIdx[j+eqChar-1]!=m->rowIdx[j+eqChar])
-                    //         ||(a->colIdx[i+eqChar-1]!=a->rowIdx[i+eqChar]))
-                    //             path = 0;
-                    // } else {
-                    //     path = 1;
-                    // }
+
                 }
 
                 // check diag compatibility (i.e. connected path)
@@ -876,7 +934,7 @@ int findCommonSub_multi(mergedCOO* m, singleCOO* a, mergingSet *ms, int tmpFound
                     }
                     // std::cout<<"merging automata "<<a->id<<endl;
 
-                    if(!existsArc(a, cfrState, a->rowIdx[i])){
+                    if(!existsArc(a, ms, a->rowIdx[i])){
                         int flag=1;
                         // for(int j=0;j<ms->size();j++){
                         //     for(int k=0;k<ms->at(j).oldStates.size();k++){
@@ -946,14 +1004,20 @@ int findCommonSub_multi(mergedCOO* m, singleCOO* a, mergingSet *ms, int tmpFound
  * @param a is the FSA
  * @return 1 if one such arc exists, 0 otherwise
  */  
-int existsArc(singleCOO* a, int state1, int state2){
-    if(state1 == -1) return 0;
-    for(int j=0;j<a->nonzeroValues.size();j++){
-        if(a->rowIdx[j]==state1&& a->colIdx[j]==state2){
-            return 1;
-            // std::cout<<"not compatible"<<endl;
+int existsArc(singleCOO* a, mergingSet *ms, int state2){
+
+    // if the arc I am trying to merge starts from a state connected by a single arc to sth merged already
+
+    for(int j=0;j<ms->size();j++){
+        for(int k=0;k<ms->at(j).oldStates.size();k++){
+            for(int l=0;l<a->nonzeroValues.size();l++){
+                if(a->rowIdx[l]==ms->at(j).oldStates[k]&& a->colIdx[l]==state2){
+                    return 1;
+                }
+            }
         }
     }
+
     // std::cout<<"compatible"<<endl;
     return 0;
 }
@@ -992,6 +1056,8 @@ int checkStatesCompatibility_multi(mergedCOO* m, singleCOO* a, int idx1, int idx
         if(a->colIdx[idx1+i]!=a->rowIdx[idx1+i+1]) return 0;
         if(m->colIdx[idx2+i]!=m->rowIdx[idx2+i+1]) return 0;
     }
+ 
+
     
     return 1; 
 }
@@ -1297,13 +1363,13 @@ mergedCOO* merge_multi(toBeMerged *set){
 
         // cout<<"before merging ranges: "<<endl;
         // printAutomaton_multi(mrg);
-        int foundSub = findCommonRange_multi(mrg, set->at(i), ms, 0);
+        // int foundSub = findCommonRange_multi(mrg, set->at(i), ms, 0);
 
         
 
         // cout<<"found "<<foundSub<<" common ranges"<<endl;
         // find common substrings
-        foundSub = findCommonSub_multi(mrg, set->at(i), ms, foundSub);
+        int foundSub = findCommonSub_multi(mrg, set->at(i), ms, foundSub);
 
         // cout<<"found "<<foundSub<<" common transitions"<<endl;
 
@@ -1462,9 +1528,9 @@ void loopExpansion_s(singleCOO *m){
                     m->colIdx.push_back(m->colIdx[j]);
                     m->nonzeroValues.push_back(m->nonzeroValues[j]);
                     int tmpR = correspondingRange_s(m, to, m->colIdx[j]);
-                    std::cout<<"bypassing from "<<from;
-                    std::cout<<" to "<<m->colIdx[j];
-                    std::cout<<" with "<<m->nonzeroValues[j]<<endl;
+                    // std::cout<<"bypassing from "<<from;
+                    // std::cout<<" to "<<m->colIdx[j];
+                    // std::cout<<" with "<<m->nonzeroValues[j]<<endl;
                     if(tmpR!=-1){
                         range newrange = m->ranges[tmpR];
                         newrange.start=from;

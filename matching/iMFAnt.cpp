@@ -267,6 +267,8 @@ void load_nfa_from_file(string &filename,  mergedCOO *m ) {
             m->rowIdx.push_back(state);
             new_range.start = state;
 
+            // cout<<"from "<<state<<endl;
+
             m->nonzeroValues.push_back(EPS);
             // nnz + hex to dec conversion
             char n = result[2][13];
@@ -283,6 +285,7 @@ void load_nfa_from_file(string &filename,  mergedCOO *m ) {
                 // non-negated range
                 new_range.neg = 0;
                 range_ref = result[2].substr(13, result[2].size()-15);
+                // cout<<"building new range with ref "<<range_ref<<endl;
             }
             // for(int k=0;k<range_ref.size();k++){
             //     cout<<range_ref[k]<<" ";
@@ -469,6 +472,8 @@ int inRange(uint16_t c, vector<uint16_t> range_ref){
  */
 void mergedCOO2MiNFAnt(mergedCOO *m, mfsa *nfa){
 
+    // printAutomaton_multi(m);
+
     nfa->alphabet = new vector<char_vector>();
 
     for(int i=0;i<ALPHA_SIZE;i++){
@@ -570,7 +575,7 @@ void print_nfa(mfsa *nfa){
         if(nfa->alphabet->at(i).pointers_to_transition->size()>0){
             cout<<"character "<<hex<<i<<" enables the following transitions:"<<endl;
             for(int j=0;j<nfa->alphabet->at(i).pointers_to_transition->size();j++){
-                cout<<"from "<<nfa->alphabet->at(i).pointers_to_transition->at(j).src<<" to "<<nfa->alphabet->at(i).pointers_to_transition->at(j).dst<<endl;
+                cout<<"from "<<dec<<(int)nfa->alphabet->at(i).pointers_to_transition->at(j).src<<" to "<<dec<<(int)nfa->alphabet->at(i).pointers_to_transition->at(j).dst<<endl;
                 cout<<"final for: ";
                 for(int k=0;k<nfa->alphabet->at(i).pointers_to_transition->at(j).isFin.size();k++)
                     cout<<nfa->alphabet->at(i).pointers_to_transition->at(j).isFin[k]<<" ";
@@ -602,7 +607,7 @@ void print_nfa(mfsa *nfa){
 void print_mp(matching_path *mp){
     cout<<"---CURRENT MATCHING PATH---"<<endl; 
     for(int i=0;i<mp->sv->size();i++){
-        cout<<mp->sv->at(i)<<" [";
+        cout<<i<<": "<<mp->sv->at(i)<<" [";
         for(int j=0; j<mp->active_re->at(i)->size(); j++){
             cout<<mp->active_re->at(i)->at(j)<<",";
         }
@@ -707,6 +712,15 @@ void activate(vector<multi_move> *to_activate, matching_path *mp){
  */
 int valid_transition(vector<int> *currently_active, vector<int> available){
     // at least one id is both active and available
+    if(V){
+        cout<<"currently active: ";
+        for(int j=0; j< currently_active->size(); j++)
+            cout<<currently_active->at(j)<<" ";
+        cout<<"\navailable: ";
+        for(int j=0;j<available.size(); j++)
+            cout << available[j]<<" ";
+        cout<<endl;
+    }
     for(int i=0; i<currently_active->size(); i++){
         for(int j=0; j<available.size(); j++){
             if(currently_active->at(i)==available[j]){
@@ -717,6 +731,19 @@ int valid_transition(vector<int> *currently_active, vector<int> available){
     return 0;
 }
 
+void print_transition(transition t){
+    cout<<"from "<<dec<<t.src<<" to "<<dec<<t.dst<<endl;
+    cout<<"initial for: ";
+    for(auto i: t.isInit)
+        cout<<dec<<i<<" ";
+    cout<<"\nfinal for: ";
+    for(auto j: t.isFin)
+        cout<<dec<<j<<" "; 
+    cout<<"\navailable for: ";
+    for(auto j: t.available)
+        cout<<dec<<j<<" "; 
+}
+
 /**
  * iMFAnt matching algorithm
  * @param mp clear matching path
@@ -725,6 +752,8 @@ int valid_transition(vector<int> *currently_active, vector<int> available){
  * @return number of matches
  */
 int infant(matching_path *mp, mfsa *nfa, string& input){
+
+    // print_nfa(nfa);
 
 
     if(input.size()==0)
@@ -750,7 +779,7 @@ int infant(matching_path *mp, mfsa *nfa, string& input){
             print_mp(mp);
         unsigned char c = input[ic];
 
-        // cout<<"--- matching "<<(int)c<<" ---"<<endl;
+        // cout<<"--- matching "<<hex<<(int)c<<" ---"<<endl;
         
         int f = 0;
         if(nfa->alphabet->at((uint16_t)c).pointers_to_transition->size()>0){
@@ -758,10 +787,12 @@ int infant(matching_path *mp, mfsa *nfa, string& input){
             vector<multi_move> *mm = new vector<multi_move>();
             // check all transitions
             for(int tr = 0; tr<nfa->alphabet->at((uint16_t)c).pointers_to_transition->size(); tr++){
+                // print_transition(nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr));
                 // for each transition enabled by character c, check whether the departure state is currently 
                 // active or, if ic==0, whether it is initial 
                 // if the departure state is currently enabled
                 if(mp->sv->at(nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).src)== 1 && valid_transition(mp->active_re->at(nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).src),nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).available)){ // il nor updated mi impedisce di attraversare certi percorsi?
+                    // cout << "activating "<< mp->sv->at(nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).dst)<<endl;
                     multi_move m; 
                     m.to = nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).dst;
                     m.from = nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).src;
@@ -785,6 +816,7 @@ int infant(matching_path *mp, mfsa *nfa, string& input){
                     if(m.active->size()>0) {
                         vector<int> mf = check_match(nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).isFin, m.active);
                         if(mf.size()>0){
+                            // cout<<" at "<<ic<<endl;
                             for(int ma = mf.size()-1; ma>=0; ma--){
                                 m.active->erase(m.active->begin()+mf[ma]);
                             }
@@ -796,6 +828,7 @@ int infant(matching_path *mp, mfsa *nfa, string& input){
                 } else if (nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).isInit.size()>0){ // not active, but can be activated (initial state)
                     int isAnchor = 0; 
                     int proceed = 1; 
+                    // cout<<"attempting to activate "<<nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).dst<<endl;
                     // check if state is anchor 
                     for(int an = 0; an<nfa->anchor_states.size(); an++){
                         if (nfa->alphabet->at((uint16_t)c).pointers_to_transition->at(tr).src == nfa->anchor_states[an])
@@ -828,7 +861,7 @@ int infant(matching_path *mp, mfsa *nfa, string& input){
                         tmp_match.erase(unique(tmp_match.begin(), tmp_match.end()), tmp_match.end());
                         match+=tmp_match.size();
                         // if(tmp_match.size()){
-                        //     cout<<"+++ initial match +++";
+                        //     cout<<"+++ initial match +++ "<<ic<<endl;
                         // }
                         if(m.active->size()>0){
                             mm->push_back(m);
@@ -839,6 +872,7 @@ int infant(matching_path *mp, mfsa *nfa, string& input){
                 }
             }
             if(!f){
+                // cout<<"no match for "<<hex<<c<<endl;
                 for(int n=0;n<mp->active_re->size();n++)
                     mp->active_re->at(n)->clear();
                 for(int i=0;i<mp->sv->size();i++)

@@ -4,7 +4,6 @@
 #include <vector>
 #include <thread>
 #include <chrono>
-#include <omp.h>
 #include "iMFAnt.hpp"
 
 
@@ -74,12 +73,12 @@ int main(int argc, char *argv[]){
 
     for (int i=0; i<REPS; i++){
         vector<matching_path *> mps = vector<matching_path *>();
-        for(int i=0; i<mfsas->size(); i++){
+        for(int l=0; l<mfsas->size(); l++){
             // cout<<maximi[i]<<endl;
             matching_path *mp = new matching_path;
             mp->sv = new vector<int>;
             mp->active_re = new vector<vector<int> *>;
-            for(int j=0;j<maximi->at(i)+1;j++){
+            for(int j=0;j<maximi->at(l)+1;j++){
                 mp->sv->push_back(0);
                 vector<int> *v= new vector<int>;
                 mp->active_re->push_back(v);
@@ -98,7 +97,7 @@ int main(int argc, char *argv[]){
             // #pragma omp parallel for num_threads(10)
             // #pragma opm for shared(mfsas, mps, buffer, input_str, matches) num_threads(1)
             for(int j=0; j<mfsas->size(); j++){
-                // cout<<"automata "<<j<<endl;
+                cout<<"automata "<<j<<endl;
                 // matches->at(j) = infant(mps->at(j), mfsas->at(j), 0, buffer.str());
                 
                 /*//check if correct number of threads
@@ -128,6 +127,7 @@ int main(int argc, char *argv[]){
 
         int mm=0; 
         for(int j=0; j<matches->size(); j++){
+            output_file<<"RE "<<j<<": "<<matches->at(j)<<endl;
             mm+=matches->at(j);
         }
         

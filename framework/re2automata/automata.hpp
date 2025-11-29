@@ -138,7 +138,7 @@ int alreadySwapped(swapTable *t, int state);
 
 int computeMax(mergedCOO *m);
 
-int existsArc(singleCOO* a, int state1, int state2);
+int existsArc(singleCOO* a, mergingSet *ms, int state2);
 
 void addTwin(mergedCOO m, int id);
 
