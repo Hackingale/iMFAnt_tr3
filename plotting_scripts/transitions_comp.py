@@ -2,14 +2,18 @@ import os
 import pandas as pd
 import numpy as np
 
-folder_base = ["../mfsa/bro_", 
-               "../mfsa/dotstar09_", 
-               "../mfsa/poweren_", 
-               "../mfsa/protomata_", 
-               "../mfsa/ranges1_", 
-               "../mfsa/tcp_"]
+folder_base = ["../mfsa/dataset_dictionary_", "../mfsa/dataset_regexes_synth_", "../mfsa/dataset_0_410_", "../mfsa/dataset_1_410_", "../mfsa/dataset_2_410_", "../mfsa/dataset_3_410_", "../mfsa/dataset_4_410_", "../mfsa/dataset_5_410_", "../mfsa/dataset_6_398_"
 
-chunks = ["1", "2", "5", "10", "20", "50","100","0"]
+]#[#"../mfsa/bro_", 
+            #    "../mfsa/dotstar09_", 
+            #    "../mfsa/poweren_", 
+            #    "../mfsa/protomata_", 
+            #    "../mfsa/ranges1_", 
+            #    "../mfsa/tcp_"]
+
+
+
+chunks = ["1","0"]
 one=[]
 two = []
 five = []

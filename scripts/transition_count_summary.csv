@@ -1,0 +1,10 @@
+Dataset,Compressed Transitions,Compressed Element,Compressed Range,Compressed Files,Uncompressed Transitions,Uncompressed Element,Uncompressed Range,Uncompressed Files,Reduction Absolute,Reduction Percentage
+dataset_0_410,4263,4023,240,1,6064,5814,250,410,1801,29.70
+dataset_1_410,4179,3949,230,1,5956,5719,237,410,1777,29.84
+dataset_2_410,4348,4114,234,1,6142,5893,249,410,1794,29.21
+dataset_3_410,4250,3997,253,1,6099,5832,267,410,1849,30.32
+dataset_4_410,4137,3903,234,1,5918,5679,239,410,1781,30.09
+dataset_5_410,4269,4009,260,1,6070,5803,267,410,1801,29.67
+dataset_6_398,4156,3906,250,1,5924,5666,258,398,1768,29.84
+dataset_regexes_synth,2473,2030,443,1,3478,3034,444,347,1005,28.90
+dataset_dictionary,1242,1242,0,1,2739,2739,0,300,1497,54.65

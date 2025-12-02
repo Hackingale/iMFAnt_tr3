@@ -15,7 +15,7 @@
 #include "iMFAnt.hpp"
 #include <bitset>
 
-#define MB 1024000
+#define MB 10500000
 #define V 0
 
 using namespace std;

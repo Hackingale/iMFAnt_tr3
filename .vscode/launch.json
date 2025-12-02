@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/alessandrom/Desktop/iMFAnt_tr3/matching",
+      "program": "/Users/alessandrom/Desktop/iMFAnt_tr3/matching/build/Debug/outDebug"
+    }
+  ]
+}

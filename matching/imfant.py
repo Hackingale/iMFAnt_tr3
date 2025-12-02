@@ -5,26 +5,41 @@ import os
 
 num_threads = [1]
 
-merging_factors = [1,10,20,50,0]
+merging_factors = [0]
 
 output_folder = "../output_matches/"
 
 input = [
-    "../mfsa/poweren_", 
-    "../mfsa/protomata_",
-    "../mfsa/dotstar09_",
-    "../mfsa/tcp_",
-    "../mfsa/bro_",
-    "../mfsa/ranges1_",
+    "../mfsa/total_poweren_",
+     "../mfsa/dataset_0_410_",
+     "../mfsa/dataset_1_410_",
+     "../mfsa/dataset_2_410_",
+     "../mfsa/dataset_3_410_",
+     "../mfsa/dataset_4_410_",
+     "../mfsa/dataset_5_410_",
+     "../mfsa/dataset_6_398_",
+    #"../mfsa/dataset_dictionary_",
+    #"../mfsa/dataset_regexes_synth_"
 ]
 
 streams = [
+    # "../input_streams/input_poweren_1Mb.input",
+    # "../input_streams/input_poweren_1Mb.input",
+    # "../input_streams/input_poweren_1Mb.input",
+    # "../input_streams/input_poweren_1Mb.input",
+    # "../input_streams/input_poweren_1Mb.input",
+    # "../input_streams/input_poweren_1Mb.input",
+    # "../input_streams/input_poweren_1Mb.input",
+    # "../input_streams/custom/input_dataset_word_dictionary_1Mb.input",
+    # "../input_streams/custom/input_dataset_synth_1Mb.input"
     "../input_streams/input_poweren_1Mb.input",
-    "../input_streams/input_proto_1Mb.input",
-    "../input_streams/input_dotstar_1Mb.input",
-    "../input_streams/input_tcp_1Mb.input",
-    "../input_streams/input_bro_1Mb.input", 
-    "../input_streams/input_ranges_1Mb.input",
+    "../input_streams/custom/input_poweren_10Mb.input",
+    "../input_streams/custom/input_poweren_10Mb.input",
+    "../input_streams/custom/input_poweren_10Mb.input",
+    "../input_streams/custom/input_poweren_10Mb.input",
+    "../input_streams/custom/input_poweren_10Mb.input",
+    "../input_streams/custom/input_poweren_10Mb.input",
+    "../input_streams/custom/input_poweren_10Mb.input"
 ]
 
 

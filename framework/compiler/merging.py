@@ -9,10 +9,11 @@ import numpy as np
 import shutil
 import math
 import argparse
+import time
 
 def main(inputRE, outputLog, batch, reps):
     print("repeating:" + str(reps[0])+" times")
-    for i in range(reps[0]):
+    for i in range(0, 1):
         print("Successful parsing iteration " + str(i))
         avg = []
         fnames = []
@@ -29,7 +30,13 @@ def main(inputRE, outputLog, batch, reps):
                         os.mkdir(outputFilename)
                     except OSError:
                         print("folder present\n")
+
+                    start = time.time()
                     f = compile_file(file, outputLog, outputFilename+"automaton", b, outputFilename+"compilation_time.txt")
+                    end = time.time()
+
+                    duration = end - start
+                    print(f"[MERGING] {file} batch={b} took {duration:.3f} seconds")
                 lineTW=fname
                 for b in currAvg:
                     lineTW=lineTW+", "+str(b)
@@ -67,12 +74,17 @@ if __name__ == "__main__":
 
 
     inputRE = [
-        "../../datasets/intrusion_benchmarks/dotstar09.txt",
-        "../../datasets/intrusion_benchmarks/ranges1.txt",
-        "../../datasets/intrusion_benchmarks/tcp.txt",
-        "../../datasets/intrusion_benchmarks/bro.txt",
-        "../../datasets/PowerEN_cmp/poweren.txt",
-        "../../datasets/protomata/protomata.txt"
+        "../../datasets/custom/total_poweren.txt",
+        "../../datasets/custom/dataset_0_410.txt",
+        "../../datasets/custom/dataset_1_410.txt",
+        "../../datasets/custom/dataset_2_410.txt",
+        "../../datasets/custom/dataset_3_410.txt",
+        "../../datasets/custom/dataset_4_410.txt",
+        "../../datasets/custom/dataset_5_410.txt",
+        "../../datasets/custom/dataset_6_398.txt",
+        "../../datasets/custom/dataset_dictionary.txt",
+        "../../datasets/custom/dataset_regexes_synth.txt"
+        
     ]
 
     simpleOutput="../output/"

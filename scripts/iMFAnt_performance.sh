@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 cd ..
 
@@ -18,7 +18,7 @@ flex -o compiler.yy.cc compiler.lex
 
 g++ -o compiler compiler.yy.cc compiler.tab.cc ast.cpp ../re2automata/re2automata.cpp -DSTATES=1 -DSTACK_TIME=0 -w -std=c++11 -g -O3
 
-python merging.py -r 1 -b 1 2 5 10 20 50 100 0
+python merging.py -r 1 -b 0
 
 cd ../../matching/
 
