@@ -53,7 +53,8 @@
      CR = 269,
      LAZY_OP = 270,
      ANCHOR_SOL = 271,
-     END = 272
+     END = 272,
+     END_ANCHOR = 273
    };
 #endif
 /* Tokens.  */
@@ -72,6 +73,7 @@
 #define LAZY_OP 270
 #define ANCHOR_SOL 271
 #define END 272
+#define END_ANCHOR 273
 
 
 
@@ -85,7 +87,7 @@ typedef union YYSTYPE
   char *string;
 }
 /* Line 1529 of yacc.c.  */
-#line 89 "compiler.tab.hh"
+#line 91 "compiler.tab.hh"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

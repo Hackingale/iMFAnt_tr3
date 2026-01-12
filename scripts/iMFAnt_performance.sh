@@ -25,13 +25,3 @@ cd ../../matching/
 make clean all
 
 python imfant.py
-
-cd ../plotting_scripts/
-
-python plotter_iMFAnt_single.py
-
-rm tmp.txt
-
-python plotter_iMFAnt_multi.py
-
-rm tmp.txt

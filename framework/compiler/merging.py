@@ -74,17 +74,7 @@ if __name__ == "__main__":
 
 
     inputRE = [
-        "../../datasets/custom/total_poweren.txt",
-        "../../datasets/custom/dataset_0_410.txt",
-        "../../datasets/custom/dataset_1_410.txt",
-        "../../datasets/custom/dataset_2_410.txt",
-        "../../datasets/custom/dataset_3_410.txt",
-        "../../datasets/custom/dataset_4_410.txt",
-        "../../datasets/custom/dataset_5_410.txt",
-        "../../datasets/custom/dataset_6_398.txt",
-        "../../datasets/custom/dataset_dictionary.txt",
-        "../../datasets/custom/dataset_regexes_synth.txt"
-        
+        "../../datasets/custom/current_dataset.txt"
     ]
 
     simpleOutput="../output/"

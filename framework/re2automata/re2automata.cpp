@@ -1,5 +1,6 @@
 #include <vector>
 #include <list>
+#include <set>
 #include <ctype.h>
 #include <stdio.h>
 #include <iostream>
@@ -131,6 +132,26 @@ void addSubexp(singleCOO* a, int start, AstNodePtr node, int orFlag, int loopFla
         if(V)
             printf("-- ANCHOR\n");
         addSubexp(a, start, node->brother, orFlag, loopFlag, 1);
+    }
+    if(node->eKind == END_ANCHOR_NODE){
+        if (V)
+            printf("-- END_ANCHOR\n");
+        // Process the child node first (e.g., AND_EXP for "hi")
+        if (node->child) {
+            addSubexp(a, start, node->child, orFlag, loopFlag, anchorFlag);
+        }
+        // Add \n transition to a new state
+        insertCOO(a, '\n', a->lastUsed, a->nextFree, 0);
+        if (loopFlag != -1) {
+            a->loops[loopFlag].path->states.push_back(a->lastUsed);
+            a->loops[loopFlag].path->states.push_back(a->nextFree);
+            a->loops[loopFlag].path->chars.push_back('\n');
+        }
+        a->lastUsed = a->nextFree;
+        a->nextFree++;
+        // Rely on addFinal to mark a->lastUsed as accepting
+        if (orFlag == -1)
+            addSubexp(a, a->lastUsed, node->brother, orFlag, loopFlag, 0);
     }
     if (node->eKind == OPCP_EXP){   
         if(V)
@@ -3003,26 +3024,19 @@ int merge_automata(std::vector<AstNodePtr> *mrg, int batch, char *out, char *tim
  * @return the number of states in the FSA
  */
 int countStates_s(singleCOO *a){
-    std::vector<int> checked; 
-    for(int i=0;i<a->rowIdx.size();i++){
-        int present = 0;
-        for(int j=0;j<checked.size();j++){
-            if (checked[j]==a->rowIdx[i])
-                present = 1; 
-        }
-        if(!present)    
-            checked.push_back(a->rowIdx[i]);
+    std::set<int> states;
+    
+    for(int i=0; i<a->rowIdx.size(); i++){
+        states.insert(a->rowIdx[i]);
+        states.insert(a->colIdx[i]);
     }
-    for(int i=0;i<a->colIdx.size();i++){
-        int present = 0;
-        for(int j=0;j<checked.size();j++){
-            if (checked[j]==a->colIdx[i])
-                present = 1; 
-        }
-        if(!present)    
-           checked.push_back(a->colIdx[i]);
+    
+    for(int i=0; i<a->ranges.size(); i++){
+        states.insert(a->ranges[i].start);
+        states.insert(a->ranges[i].end);
     }
-    return checked.size();
+    
+    return states.size();
 }
 
 /**
@@ -3040,26 +3054,19 @@ int countTrans_s(singleCOO *a){
  * @return the number of states in the MFSA
  */
 int countStates_m(mergedCOO *a){
-    std::vector<int> checked; 
-    for(int i=0;i<a->rowIdx.size();i++){
-        int present = 0;
-        for(int j=0;j<checked.size();j++){
-            if (checked[j]==a->rowIdx[i])
-                present = 1; 
-        }
-        if(!present)    
-            checked.push_back(a->rowIdx[i]);
+    std::set<int> states;
+    
+    for(int i=0; i<a->rowIdx.size(); i++){
+        states.insert(a->rowIdx[i]);
+        states.insert(a->colIdx[i]);
     }
-    for(int i=0;i<a->colIdx.size();i++){
-        int present = 0;
-        for(int j=0;j<checked.size();j++){
-            if (checked[j]==a->colIdx[i])
-                present = 1; 
-        }
-        if(!present)    
-           checked.push_back(a->colIdx[i]);
+    
+    for(int i=0; i<a->ranges.size(); i++){
+        states.insert(a->ranges[i].start);
+        states.insert(a->ranges[i].end);
     }
-    return checked.size();
+    
+    return states.size();
 }
 
 /**

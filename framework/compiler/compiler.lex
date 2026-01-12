@@ -58,9 +58,15 @@ backslash \\.
      return CR;
      }
 
-<INITIAL>[^\\]\$ {
-  yylval.character='\n';
-  return CHAR;
+<INITIAL>"\\$" {
+    /* Escaped dollar: literal CHAR '$' */
+    yylval.character = '$';
+    return CHAR;
+}
+
+<INITIAL>"$" {
+    /* Unescaped dollar: end anchor */
+    return END_ANCHOR;
 }
 
 <INITIAL>\^ {

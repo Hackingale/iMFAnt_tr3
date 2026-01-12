@@ -37,7 +37,7 @@ std::vector<int> fe;
 %token OR CR LAZY_OP
 %token ANCHOR_SOL
 %token END
-
+%token END_ANCHOR
 %left CHAR DOT
 %left CP CR RANGE_OP
 %right OP OR OR_OP
@@ -57,6 +57,13 @@ Line:
         mrg->push_back(regular);
         // printf("size is now %d\n", mrg->size());
      }
+     | OrExpression END_ANCHOR END { 
+        AstNodePtr anchor_node = new_ExprNode(END_ANCHOR_NODE, NULL, 0);
+        anchor_node->child = fixOR($1);
+        regular = anchor_node;
+        mrg->push_back(regular);
+        printf("Parsed regex with END_ANCHOR\n");
+    }
 ;
 
 Expressions:

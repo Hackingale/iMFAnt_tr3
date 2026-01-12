@@ -10,36 +10,11 @@ merging_factors = [0]
 output_folder = "../output_matches/"
 
 input = [
-    "../mfsa/total_poweren_",
-     "../mfsa/dataset_0_410_",
-     "../mfsa/dataset_1_410_",
-     "../mfsa/dataset_2_410_",
-     "../mfsa/dataset_3_410_",
-     "../mfsa/dataset_4_410_",
-     "../mfsa/dataset_5_410_",
-     "../mfsa/dataset_6_398_",
-    #"../mfsa/dataset_dictionary_",
-    #"../mfsa/dataset_regexes_synth_"
+    "../mfsa/current_dataset_"
 ]
 
 streams = [
-    # "../input_streams/input_poweren_1Mb.input",
-    # "../input_streams/input_poweren_1Mb.input",
-    # "../input_streams/input_poweren_1Mb.input",
-    # "../input_streams/input_poweren_1Mb.input",
-    # "../input_streams/input_poweren_1Mb.input",
-    # "../input_streams/input_poweren_1Mb.input",
-    # "../input_streams/input_poweren_1Mb.input",
-    # "../input_streams/custom/input_dataset_word_dictionary_1Mb.input",
-    # "../input_streams/custom/input_dataset_synth_1Mb.input"
-    "../input_streams/input_poweren_1Mb.input",
-    "../input_streams/custom/input_poweren_10Mb.input",
-    "../input_streams/custom/input_poweren_10Mb.input",
-    "../input_streams/custom/input_poweren_10Mb.input",
-    "../input_streams/custom/input_poweren_10Mb.input",
-    "../input_streams/custom/input_poweren_10Mb.input",
-    "../input_streams/custom/input_poweren_10Mb.input",
-    "../input_streams/custom/input_poweren_10Mb.input"
+    "../input_streams/custom/input_current.input"
 ]
 
 
