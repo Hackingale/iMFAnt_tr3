@@ -1,2 +1,11 @@
 /mfsa
 /mfsa
+/.idea
+/framework/compiler
+matching/multithreaded_imfant 2
+matching/multithreaded_imfant 3
+output_matches/current_dataset__multi_0m_32t.output.txt
+output_matches/current_dataset__multi_1m_32t.output.txt
+output_matches/current_dataset__multi_1m_32t.output.txt
+matching/build/Debug/iMFAnt.o
+.DS_Store
