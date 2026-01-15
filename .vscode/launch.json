@@ -2,6 +2,35 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Compiler",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/framework/compiler/compiler",
+      "args": [
+        "-i",
+        "../../datasets/custom/current_dataset.txt",
+        "-b",
+        "-1",
+        "-o",
+        "../../mfsa/current_dataset_0/automaton",
+        "-t",
+        "../../mfsa/current_dataset_0/compilation_time.txt"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/framework/compiler",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "build-compiler",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
       "name": "C/C++ Runner: Debug Session",
       "type": "lldb",
       "request": "launch",

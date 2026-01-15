@@ -9,3 +9,7 @@ output_matches/current_dataset__multi_1m_32t.output.txt
 output_matches/current_dataset__multi_1m_32t.output.txt
 matching/build/Debug/iMFAnt.o
 .DS_Store
+framework/compiler/compiler
+/output_matches
+output_matches/current_dataset__multi_1m_32t.output.txt
+framework/compiler/compiler.tab.cc
